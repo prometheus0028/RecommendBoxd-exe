@@ -355,10 +355,10 @@ body {
 /* Background Windows Mobile Visibility */
 @media (max-width: 1024px) {
   .main-window {
-    margin: 250px auto 250px auto !important;
+    margin: 20px auto 100px auto !important; /* Place at the top of phone screen */
   }
   .main-window.is-loading {
-    position: fixed;
+    position: fixed !important;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -387,10 +387,10 @@ body {
 
 @media (max-width: 480px) {
   .main-window {
-    margin: 200px auto 250px auto !important;
+    margin: 20px auto 100px auto !important; /* Place at the top of phone screen */
   }
   .main-window.is-loading {
-    position: fixed;
+    position: fixed !important;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

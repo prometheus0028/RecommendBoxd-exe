@@ -310,7 +310,7 @@ export default function Home() {
       </div>
 
       {/* Main Application Window */}
-      <div className={`xp-window main-window ${loading ? 'is-loading' : ''}`} style={{ maxWidth: "850px", zIndex: 10, position: "relative" }}>
+      <div className={`xp-window main-window ${loading ? 'is-loading' : ''}`} style={{ maxWidth: "850px", zIndex: 10 }}>
         <div className="xp-titlebar">
           <div className="xp-title">
             <Film size={16} style={{ marginRight: '5px' }} />
