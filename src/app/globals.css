@@ -37,9 +37,11 @@ body {
   font-family: 'Tahoma', sans-serif;
   color: var(--lb-white);
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start; /* Safe vertical centering via margin: auto */
+  align-items: center; /* Horizontal centering */
   min-height: 100vh;
+  padding: 40px 0;
 }
 
 * {
@@ -352,15 +354,15 @@ body {
 
 /* Background Windows Mobile Visibility */
 @media (max-width: 1024px) {
-  body {
-    align-items: flex-start; /* Fix flexbox overlap issue on mobile */
-  }
   .main-window {
-    margin: 250px auto 250px auto;
+    margin: 250px auto 250px auto !important;
   }
   .main-window.is-loading {
-    margin: auto !important;
-    align-self: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 !important;
   }
   .socials-window {
     margin: 0 0 300px 0;
@@ -384,15 +386,15 @@ body {
 }
 
 @media (max-width: 480px) {
-  body {
-    align-items: flex-start;
-  }
   .main-window {
-    margin: 200px auto 250px auto;
+    margin: 200px auto 250px auto !important;
   }
   .main-window.is-loading {
-    margin: auto !important;
-    align-self: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 !important;
   }
   .socials-window {
     margin: 0 0 250px 0;
