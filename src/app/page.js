@@ -310,19 +310,11 @@ export default function Home() {
       </div>
 
       {/* Main Application Window */}
-      <div
-        className="xp-window main-window"
-        style={{
-          maxWidth: '850px',
-          margin: '20px 0',
-          zIndex: 10,
-          position: 'relative',
-        }}
-      >
+      <div className="xp-window main-window" style={{ maxWidth: "850px", margin: "20px 0", zIndex: 10, position: "relative" }}>
         <div className="xp-titlebar">
           <div className="xp-title">
-            <Film size={16} />
-            recommendboxd.exe
+            <Film size={16} style={{ marginRight: '5px' }} />
+            <span> recommendboxd.exe</span>
           </div>
           <div className="xp-controls">
             <button className="xp-btn">
