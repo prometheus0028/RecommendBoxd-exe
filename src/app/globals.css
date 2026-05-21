@@ -64,6 +64,10 @@ body {
   overflow: hidden;
 }
 
+.main-window {
+  margin: auto; /* Vertically and horizontally center on desktop */
+}
+
 .xp-window-bg {
   position: fixed;
   background-color: var(--lb-bg);
