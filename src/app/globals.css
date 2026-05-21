@@ -356,7 +356,11 @@ body {
     align-items: flex-start; /* Fix flexbox overlap issue on mobile */
   }
   .main-window {
-    margin: 250px 0 250px 0;
+    margin: 250px auto 250px auto;
+  }
+  .main-window.is-loading {
+    margin: auto !important;
+    align-self: center;
   }
   .socials-window {
     margin: 0 0 300px 0;
@@ -384,7 +388,11 @@ body {
     align-items: flex-start;
   }
   .main-window {
-    margin: 200px 0 250px 0;
+    margin: 200px auto 250px auto;
+  }
+  .main-window.is-loading {
+    margin: auto !important;
+    align-self: center;
   }
   .socials-window {
     margin: 0 0 250px 0;

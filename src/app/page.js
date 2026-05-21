@@ -310,7 +310,7 @@ export default function Home() {
       </div>
 
       {/* Main Application Window */}
-      <div className="xp-window main-window" style={{ maxWidth: "850px", margin: "20px 0", zIndex: 10, position: "relative" }}>
+      <div className={`xp-window main-window ${loading ? 'is-loading' : ''}`} style={{ maxWidth: "850px", zIndex: 10, position: "relative" }}>
         <div className="xp-titlebar">
           <div className="xp-title">
             <Film size={16} style={{ marginRight: '5px' }} />
@@ -526,7 +526,7 @@ export default function Home() {
           )}
 
           {loading && (
-            <div style={{ textAlign: 'center', padding: '40px', minHeight: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ textAlign: 'center', padding: '40px' }}>
               <div
                 style={{
                   color: 'var(--lb-blue)',
@@ -614,7 +614,7 @@ export default function Home() {
                   paddingBottom: '5px',
                 }}
               >
-                1. RECENTLY WATCHED DISCOVERIES
+                1. RECENTLY WATCHED DISCOVERIES (from your last 50 watched)
               </h3>
               <MovieGrid
                 movies={results.recent}

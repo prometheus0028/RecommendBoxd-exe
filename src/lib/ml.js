@@ -82,15 +82,10 @@ export function scoreAndRankCandidates(candidatesWithDetails, profileVector, wat
     let highestSim = -1;
     
     watchedMoviesWithDetails.forEach(watched => {
-      // Don't compare to itself if candidate happens to be in watched
       if (watched.details && watched.details.id !== candidate.id) {
         const sim = cosineSimilarity(candidateVec, vectorizeMovie(watched.details));
-        // Give preference to highly rated/liked movies for explanations
-        const explanationWeight = (watched.rating > 0 ? watched.rating : 3) + (watched.liked ? 1 : 0);
-        const weightedSim = sim * explanationWeight;
-        
-        if (weightedSim > highestSim) {
-          highestSim = weightedSim;
+        if (sim > highestSim) {
+          highestSim = sim;
           mostSimilarWatched = watched;
         }
       }
@@ -136,7 +131,7 @@ export function scoreAndRankCandidates(candidatesWithDetails, profileVector, wat
       const r = movie.reason;
       if (r && r !== "Based on your overall watch history.") {
         const count = reasonCounts[r] || 0;
-        if (count >= 1) continue; // Skip if this exact reason was already used in this category
+        if (count >= 1) continue; // Limit 1 recommendation per seed
         reasonCounts[r] = count + 1;
       }
 

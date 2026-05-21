@@ -141,11 +141,11 @@ export async function POST(request) {
 
     const watchlist = watchlistData.slice(0, 30); // Restored to 30
 
-    // Helper: Map LB items to TMDB details using chunked concurrency (Size 3)
+    // Helper: Map LB items to TMDB details using chunked concurrency
     // This perfectly balances raw speed with ISP safety!
     async function enrichWithTmdb(items) {
       const enriched = [];
-      const CHUNK_SIZE = 3; 
+      const CHUNK_SIZE = 15; 
       
       for (let i = 0; i < items.length; i += CHUNK_SIZE) {
         const chunk = items.slice(i, i + CHUNK_SIZE);
@@ -162,7 +162,7 @@ export async function POST(request) {
         results.forEach(r => { if (r) enriched.push(r); });
         
         if (i + CHUNK_SIZE < items.length) {
-          await sleep(100); // Tiny pause between chunks
+          await sleep(250); // Tiny pause between chunks
         }
       }
       return enriched;
@@ -181,7 +181,7 @@ export async function POST(request) {
     let excludeData = watchedData.concat(watchlistData);
 
     // CATEGORY 1: Watchlist Recommendations
-    const watchlistRecommendations = scoreAndRankCandidates(
+    let watchlistRecommendations = scoreAndRankCandidates(
       enrichedWatchlist.map(w => w.details), 
       profileVector, 
       enrichedWatched, 
@@ -189,45 +189,59 @@ export async function POST(request) {
       false, // Do not filter quality for user's explicit watchlist
       watchedData // Only exclude watched from watchlist section
     );
+    
+    // Explicitly label the reason so users don't get confused
+    watchlistRecommendations = watchlistRecommendations.map(m => ({
+      ...m,
+      reason: m.reason && m.reason !== "Based on your overall watch history." 
+        ? `From your Watchlist: ${m.reason}` 
+        : 'On your Watchlist'
+    }));
 
     // CATEGORY 2: Based on Liked
     const likedSeeds = [...enrichedWatched]
       .filter(m => m.liked || m.rating >= 4)
-      .slice(0, 5); // Take top 5 liked
+      .slice(0, 40); // Take top 40 liked
     
     let likedCandidatesRaw = [];
     const likedChunks = [];
-    for (let i = 0; i < likedSeeds.length; i += 3) likedChunks.push(likedSeeds.slice(i, i + 3));
+    for (let i = 0; i < likedSeeds.length; i += 15) likedChunks.push(likedSeeds.slice(i, i + 15));
     
     for (const chunk of likedChunks) {
       const promises = chunk.map(async (seed) => {
-        if (seed.details) return await getRecommendations(seed.details.id);
+        if (seed.details) {
+          const recs = await getRecommendations(seed.details.id);
+          return recs.map(r => ({ ...r, reason: `Similar to ${seed.title} which you liked.` }));
+        }
         return [];
       });
       const results = await Promise.all(promises);
       results.forEach(recs => likedCandidatesRaw.push(...recs));
-      await sleep(100);
+      await sleep(250);
     }
     const likedRecommendations = scoreAndRankCandidates(likedCandidatesRaw, profileVector, enrichedWatched, 12, true, excludeData);
     
     // Prevent these exact movies from showing up in other categories
     excludeData = excludeData.concat(likedRecommendations);
 
-    // CATEGORY 3: Based on Recently Watched (Top 7)
+    // CATEGORY 3: Based on Recently Watched (Top 50)
     // We must grab the actual recent movies from watchedData, since enrichedWatched is now sorted by rating!
-    const trueRecentSeeds = await enrichWithTmdb([...watchedData].slice(0, 7));
+    const trueRecentSeeds = await enrichWithTmdb([...watchedData].slice(0, 50));
     let recentCandidatesRaw = [];
     const recentChunks = [];
-    for (let i = 0; i < trueRecentSeeds.length; i += 3) recentChunks.push(trueRecentSeeds.slice(i, i + 3));
+    for (let i = 0; i < trueRecentSeeds.length; i += 15) recentChunks.push(trueRecentSeeds.slice(i, i + 15));
     
     for (const chunk of recentChunks) {
       const promises = chunk.map(async (seed) => {
-        if (seed && seed.details) return await getRecommendations(seed.details.id);
+        if (seed && seed.details) {
+          const recs = await getRecommendations(seed.details.id);
+          return recs.map(r => ({ ...r, reason: `Because you recently watched ${seed.title}.` }));
+        }
         return [];
       });
       const results = await Promise.all(promises);
       results.forEach(recs => recentCandidatesRaw.push(...recs));
-      await sleep(100);
+      await sleep(250);
     }
     const recentRecommendations = scoreAndRankCandidates(recentCandidatesRaw, profileVector, enrichedWatched, 12, true, excludeData);
     
