@@ -315,8 +315,11 @@ body {
 
 /* Background Windows Mobile Visibility */
 @media (max-width: 1024px) {
+  body {
+    align-items: flex-start; /* Fix flexbox overlap issue on mobile */
+  }
   .main-window {
-    margin: 250px 0 50px 0; 
+    margin: 250px 0 250px 0; 
   }
   .socials-window {
     margin: 0 0 300px 0;
@@ -340,8 +343,11 @@ body {
 }
 
 @media (max-width: 480px) {
+  body {
+    align-items: flex-start;
+  }
   .main-window {
-    margin: 200px 0 50px 0;
+    margin: 200px 0 250px 0;
   }
   .socials-window {
     margin: 0 0 250px 0;
