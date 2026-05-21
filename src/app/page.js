@@ -526,7 +526,7 @@ export default function Home() {
           )}
 
           {loading && (
-            <div style={{ textAlign: 'center', padding: '40px' }}>
+            <div style={{ textAlign: 'center', padding: '40px', minHeight: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <div
                 style={{
                   color: 'var(--lb-blue)',
